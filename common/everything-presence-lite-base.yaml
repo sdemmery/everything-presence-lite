@@ -74,7 +74,7 @@ sensor:
       - clamp:
           min_value: 0
 
-  - platform: bme280
+  - platform: bme280_i2c
     i2c_id: bus_a
     temperature:
       name: "Temperature"
