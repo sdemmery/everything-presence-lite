@@ -7,6 +7,15 @@ esphome:
     name: EverythingSmartTechnology.Everything Presence Lite
     version: "1.2.5"  # Updated to the latest version
 
+  # On boot actions to handle power cycling of the BME280 sensor
+  on_boot:
+    priority: 600
+    then:
+      - switch.turn_on: bme280_power
+      - delay: 500ms  # Wait for sensor to power up
+      - sensor.update: bme280  # Trigger initial sensor read
+      - switch.turn_off: bme280_power  # Turn off sensor after initial read
+
 esp32:
   board: esp32dev
   framework:
@@ -108,15 +117,6 @@ interval:
       - switch.turn_on: bme280_power
       - delay: 10s
       - switch.turn_off: bme280_power
-
-# On Boot Actions (Power on sensor, read initial value, then turn off)
-on_boot:
-  priority: 600
-  then:
-    - switch.turn_on: bme280_power
-    - delay: 500ms  # Wait for sensor to power up
-    - sensor.update: bme280  # Trigger initial sensor read
-    - switch.turn_off: bme280_power  # Turn off sensor after initial read
 
 # Button to restart the ESP
 button:
