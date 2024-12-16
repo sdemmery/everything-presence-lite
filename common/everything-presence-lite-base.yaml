@@ -12,6 +12,11 @@ esp32:
   framework:
     type: esp-idf
 
+on_boot:
+  priority: -100  # Runs after everything else to avoid conflicts
+  then:
+    - switch.turn_off: bme280_power  # Ensure GPIO is LOW at startup
+
 # Enable logging
 logger:
   level: ${log_level}
@@ -62,6 +67,15 @@ number:
     on_value:
       - lambda: 'id(illuminance_sensor).update();'
 
+# Switch to control BME280 power
+switch:
+  - platform: gpio
+    id: bme280_power
+    pin:
+      number: GPIO05  # GPIO pin controlling the power to BME280
+      mode: OUTPUT
+      inverted: false
+
 sensor:
   - platform: bh1750
     name: Illuminance
@@ -79,39 +93,24 @@ sensor:
     temperature:
       name: "Temperature"
       id: temperature_sensor
-      filters:
-        - calibrate_linear:
-          - 0.0 -> 0.0
-          - 18.11 -> 16.92
-          - 18.18 -> 16.83
-          - 18.29 -> 16.67
-          - 18.82 -> 17.46
-          - 18.84 -> 17.46
-          - 18.96 -> 17.55
-          - 18.99 -> 17.63
-          - 19.06 -> 17.7
-          - 19.06 -> 17.72
-          - 19.26 -> 17.72
-          - 19.4 -> 17.82
-          - 19.54 -> 17.98
-          - 19.66 -> 17.86
-          - 20.15 -> 18
-          - 20.31 -> 18.2
-          - 20.78 -> 18.85
-          - 20.79 -> 18.8
-          - 20.9 -> 18.82
     pressure:
       name: "Pressure"
       id: pressure
     humidity:
       name: "Humidity"
       id: humidity
-      filters:
-        - calibrate_linear:
-          - 0.0 -> 0.0
-          - 43.0 -> 53.0
     address: 0x76
-    update_interval: 5s
+    update_interval: never  # Disabled periodic updates to control manually
+
+interval:
+  - interval: 1min
+    then:
+      - switch.turn_on: bme280_power  # Turn on the sensor power
+      - delay: 10s                  # Wait for the sensor to stabilize
+      - sensor.read: temperature_sensor  # Trigger manual sensor readings
+      - sensor.read: pressure
+      - sensor.read: humidity
+      - switch.turn_off: bme280_power  # Turn off the sensor power
 
 button:
   - platform: restart
