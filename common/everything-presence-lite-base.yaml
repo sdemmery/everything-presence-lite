@@ -45,22 +45,18 @@ sensor:
       - lambda: "return x + id(illuminance_offset_ui).state;"
       - clamp:
           min_value: 0
-    friendly_name: "Illuminance"
           
   - platform: bme280_i2c
     i2c_id: bus_a
     temperature:
       name: "Temperature"
       id: temperature_sensor
-      friendly_name: "Temperature"
     pressure:
       name: "Pressure"
       id: pressure
-      friendly_name: "Pressure"
     humidity:
       name: "Humidity"
       id: humidity
-      friendly_name: "Humidity"
     address: 0x76
     update_interval: 5s
 
