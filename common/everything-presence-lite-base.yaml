@@ -9,14 +9,10 @@ esphome:
   on_boot:
     priority: -100
     then:
-      # Power on the sensor at boot
       - switch.turn_on: 
           id: bme280_power
-      # Give the sensor time to power on before scanning
-      - delay: 5s  # Adjust this delay if needed (ensure the sensor has stabilized)
-      # Allow I2C scan to automatically run (done by ESPHome)
-      - delay: 30s  # Wait for stabilization (may vary based on your sensor)
-      # Power off the sensor after the scan
+      - delay: 5s
+      - delay: 30s
       - switch.turn_off: 
           id: bme280_power
 
@@ -25,12 +21,16 @@ esp32:
   framework:
     type: esp-idf
 
+# OTA configuration for over-the-air updates
+ota:
+  password: !secret ota_password  # Replace with a secure password for OTA updates
+
 # I2C bus configuration
 i2c:
   - id: bus_a
     sda: 21
     scl: 22
-    scan: true  # This will automatically scan the I2C bus on boot
+    scan: true
 
 # Switch to control BME280 power
 switch:
@@ -67,14 +67,11 @@ sensor:
       name: "Humidity"
       id: humidity
     address: 0x76
-    update_interval: 5s  # Disable periodic updates since we control it manually
+    update_interval: 5s
 
 # Interval for periodic tasks
 interval:
   - interval: 1min
     then:
       - switch.turn_on: 
-          id: bme280_power  # Power on the sensor
-      - delay: 20s  # Ensure sensor has stabilized
-      - switch.turn_off: 
-          id: bme280_power  # Turn off the sensor
+          id: bme280_power
