@@ -114,7 +114,7 @@ button:
     icon: mdi:power-cycle
     name: "ESP Reboot"
 
-# Flash the LED when GPIO23 (sensor power) is ON
+# Flash the onboard red LED when GPIO23 (sensor power) is ON
 binary_sensor:
   - platform: gpio
     pin: GPIO23
@@ -122,17 +122,16 @@ binary_sensor:
     on_press:
       - logger.log: "Sensor is powered on, flashing LED"
       - delay: 0.5s
-      - output.turn_on: power_led
+      - output.turn_on: onboard_led
       - delay: 0.1s
-      - output.turn_off: power_led
+      - output.turn_off: onboard_led
     on_release:
       - logger.log: "Sensor is powered off, turning off LED"
-      - output.turn_off: power_led
+      - output.turn_off: onboard_led
 
-# Light for flashing LED when sensor power is on
+# Flash the onboard red LED connected to GPIO2
 output:
   - platform: gpio
-    pin: GPIO2
-    id: power_led
+    pin: GPIO2  # Onboard red LED for most ESP32 boards
+    id: onboard_led
     inverted: false
-    restore_mode: ALWAYS_OFF
