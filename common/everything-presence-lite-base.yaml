@@ -83,8 +83,7 @@ sensor:
       - lambda: "return x + id(illuminance_offset_ui).state;"
       - clamp:
           min_value: 0
-
-sensor:
+          
   - platform: bme280_i2c
     i2c_id: bus_a
     temperature:
