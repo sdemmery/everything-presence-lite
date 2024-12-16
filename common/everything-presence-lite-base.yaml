@@ -42,12 +42,12 @@ i2c:
     scl: 22
     scan: true
 
-# Switch to control BME280 power
+# Switch to control BME280 power (GPIO23 remains unchanged)
 switch:
   - platform: gpio
     id: bme280_power
     pin:
-      number: GPIO23
+      number: GPIO23  # GPIO23 is used for BME280 power
       mode: OUTPUT
       inverted: false
     restore_mode: ALWAYS_OFF
@@ -114,10 +114,10 @@ button:
     icon: mdi:power-cycle
     name: "ESP Reboot"
 
-# Flash the onboard red LED when GPIO23 (sensor power) is ON
+# Flash the onboard red LED when sensor power is ON, move binary sensor to GPIO4
 binary_sensor:
   - platform: gpio
-    pin: GPIO23
+    pin: GPIO4  # Changed from GPIO23 to GPIO4 for binary sensor
     name: "Sensor Power Control"
     on_press:
       - logger.log: "Sensor is powered on, flashing LED"
