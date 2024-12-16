@@ -5,7 +5,7 @@ esphome:
   name_add_mac_suffix: False
   project:
     name: EverythingSmartTechnology.Everything Presence Lite
-    version: "1.2.3"
+    version: "1.2.4"
   on_boot:
     priority: -100
     then:
@@ -23,10 +23,7 @@ esp32:
 
 # OTA configuration for over-the-air updates
 ota:
-  - platform: esphome
-    id: ota_esphome
-  - platform: http_request
-    id: ota_http_request
+  password: !secret ota_password  # Replace with a secure password for OTA updates
 
 # I2C bus configuration
 i2c:
@@ -77,4 +74,4 @@ interval:
   - interval: 1min
     then:
       - switch.turn_on: 
-          id: bme280_power
+          id: bme280_power   
