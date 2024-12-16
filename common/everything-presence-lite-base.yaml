@@ -1,21 +1,24 @@
 esphome:
-  name: ${name}
+  name: cave-sensors
   comment: Everything Presence Lite
-  friendly_name: ${friendly_name}
-  name_add_mac_suffix: True
+  friendly_name: cave-sensors
+  name_add_mac_suffix: False
   project:
     name: EverythingSmartTechnology.Everything Presence Lite
     version: "1.2.3"
   on_boot:
-    priority: 600
+    priority: -100
     then:
+      # Power on the sensor at boot
       - switch.turn_on: 
-          id: bme280_power  # Power on the sensor at boot
-      - delay: 2s  # Give the sensor time to power on
-      - i2c.scan:  # Scan the I2C bus after powering the sensor
-      - delay: 30s  # Wait to allow sensor to stabilize
+          id: bme280_power
+      # Give the sensor time to power on before scanning
+      - delay: 5s  # Adjust this delay if needed (ensure the sensor has stabilized)
+      # Allow I2C scan to automatically run (done by ESPHome)
+      - delay: 30s  # Wait for stabilization (may vary based on your sensor)
+      # Power off the sensor after the scan
       - switch.turn_off: 
-          id: bme280_power  # Turn off the sensor power after the scan
+          id: bme280_power
 
 esp32:
   board: esp32dev
