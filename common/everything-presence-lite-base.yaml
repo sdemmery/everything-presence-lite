@@ -5,17 +5,7 @@ esphome:
   name_add_mac_suffix: True
   project:
     name: EverythingSmartTechnology.Everything Presence Lite
-    version: "1.2.5"  # Updated to the latest version
-
-  # On boot actions to handle power cycling of the BME280 sensor
-  on_boot:
-    priority: 1200
-    then:
-      - switch.turn_on: bme280_power
-      - logger.log: "Im in the on boot section!!!!!!!!"
-      - delay: 5s  # Wait for sensor to power up
-      - switch.turn_off: bme280_power  # Turn off sensor after initial read
-      - logger.log: "Im LEAVING the on boot section!!!!!!!!"
+    version: "1.2.8"  # Updated to the latest version
 
 esp32:
   board: esp32dev
@@ -47,21 +37,10 @@ wifi:
 
 # I2C bus configuration
 i2c:
-  - delay: 5s  # Wait for sensor to power up
   - id: bus_a
     sda: 21
     scl: 22
     scan: true
-
-# Switch to control BME280 power (GPIO23 remains unchanged)
-switch:
-  - platform: gpio
-    id: bme280_power
-    pin:
-      number: GPIO23  # GPIO23 is used for BME280 power
-      mode: OUTPUT
-      inverted: false
-    restore_mode: ALWAYS_OFF
 
 # Number for illuminance offset
 number:
@@ -99,23 +78,18 @@ sensor:
     i2c_id: bus_a
     temperature:
       name: "Temperature"
+      oversampling: 1x
       id: temperature_sensor
     pressure:
       name: "Pressure"
+      oversampling: 1x
       id: pressure
     humidity:
       name: "Humidity"
+      oversampling: 1x
       id: humidity
     address: 0x76
-    update_interval: 5s
-
-# Interval for periodic tasks (BME280 power cycling)
-interval:
-  - interval: 1min
-    then:
-      - switch.turn_on: bme280_power
-      - delay: 10s
-      - switch.turn_off: bme280_power
+    update_interval: 60s
 
 # Button to restart the ESP
 button:
