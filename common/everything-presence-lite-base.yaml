@@ -60,15 +60,6 @@ light:
     internal: False
     restore_mode: ALWAYS_OFF
 
-# Light for blinking (when sensor is powered on)
-light:
-  - platform: gpio
-    pin: GPIO2
-    id: power_led
-    name: "Power LED"
-    restore_mode: ALWAYS_OFF
-    inverted: false
-
 # Number for illuminance offset
 number:
   - platform: template
@@ -145,3 +136,12 @@ binary_sensor:
     on_release:
       - logger.log: "Sensor is powered off, turning off LED"
       - light.turn_off: power_led
+
+# Light for flashing LED when sensor power is on
+light:
+  - platform: gpio
+    pin: GPIO2
+    id: power_led
+    name: "Power LED"
+    restore_mode: ALWAYS_OFF
+    inverted: false
