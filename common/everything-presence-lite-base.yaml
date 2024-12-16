@@ -16,6 +16,7 @@ esphome:
       - switch.turn_off: 
           id: bme280_power
 
+
 esp32:
   board: esp32dev
   framework:
