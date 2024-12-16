@@ -11,16 +11,11 @@ esphome:
   on_boot:
     priority: 1000
     then:
-      - lambda: |-
-          pinMode(23, OUTPUT);
-          digitalWrite(23, HIGH);
-
+      - switch.turn_on: bme280_power
+      - logger.log: "Im in the on boot section!!!!!!!!"
       - delay: 5s  # Wait for sensor to power up
-
-      - lambda: |-
-          pinMode(23, OUTPUT);
-          digitalWrite(23, LOW);
-
+      - switch.turn_off: bme280_power  # Turn off sensor after initial read
+      - logger.log: "Im LEAVING the on boot section!!!!!!!!"
 
 esp32:
   board: esp32dev
