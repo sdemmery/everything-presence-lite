@@ -12,11 +12,6 @@ esp32:
   framework:
     type: esp-idf
 
-on_boot:
-  priority: -100  # Runs after everything else to avoid conflicts
-  then:
-    - switch.turn_off: bme280_power  # Ensure GPIO is LOW at startup
-
 # Enable logging
 logger:
   level: ${log_level}
@@ -75,6 +70,7 @@ switch:
       number: GPIO05  # GPIO pin controlling the power to BME280
       mode: OUTPUT
       inverted: false
+    restore_mode: ALWAYS_OFF  # Ensure the GPIO is LOW at startup
 
 sensor:
   - platform: bh1750
