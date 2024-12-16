@@ -1,7 +1,23 @@
+esphome:
+  name: ${name}
+  comment: Everything Presence Lite
+  friendly_name: ${friendly_name}
+  name_add_mac_suffix: True
+  project:
+    name: EverythingSmartTechnology.Everything Presence Lite
+    version: "1.2.5"  # Updated to the latest version
+
 esp32:
   board: esp32dev
   framework:
     type: esp-idf
+
+# Enable logging
+logger:
+  level: ${log_level}
+
+# Enable Home Assistant API
+api:
 
 # OTA configuration for over-the-air updates
 ota:
@@ -15,6 +31,9 @@ http_request:
   useragent: esphome/1.1
   timeout: 10s
   verify_ssl: false
+
+# WiFi configuration (Add your WiFi settings here)
+wifi:
 
 # I2C bus configuration
 i2c:
@@ -32,6 +51,33 @@ switch:
       mode: OUTPUT
       inverted: false
     restore_mode: ALWAYS_OFF
+
+# Light configuration (status LED)
+light:
+  - platform: status_led
+    name: ESP32 LED
+    pin: GPIO14
+    internal: False
+    restore_mode: ALWAYS_OFF
+
+# Number for illuminance offset
+number:
+  - platform: template
+    name: "Illuminance Offset"
+    id: illuminance_offset_ui
+    unit_of_measurement: "lx"
+    min_value: -100
+    max_value: 100
+    step: 5
+    mode: slider
+    update_interval: never
+    optimistic: true
+    restore_value: true
+    initial_value: 0
+    icon: "mdi:brightness-5"
+    entity_category: config
+    on_value:
+      - lambda: 'id(illuminance_sensor).update();'
 
 # Define your sensors here
 sensor:
@@ -60,7 +106,7 @@ sensor:
     address: 0x76
     update_interval: 5s
 
-# Interval for periodic tasks
+# Interval for periodic tasks (BME280 power cycling)
 interval:
   - interval: 1min
     then:
@@ -69,3 +115,9 @@ interval:
       - delay: 10s
       - switch.turn_off: 
           id: bme280_power
+
+# Button to restart the ESP
+button:
+  - platform: restart
+    icon: mdi:power-cycle
+    name: "ESP Reboot"
