@@ -98,16 +98,20 @@ sensor:
     address: 0x76
     update_interval: never  # Disable periodic updates since we control it manually
 
-
 interval:
   - interval: 1min
     then:
       - switch.turn_on: 
           id: bme280_power
-      - delay: 10s  # Stabilize the sensor
+      - delay: 20s  # Increased delay to ensure sensor stabilizes
+      - sensor.update: 
+          id: temperature_sensor
+      - sensor.update: 
+          id: pressure
+      - sensor.update: 
+          id: humidity
       - switch.turn_off: 
           id: bme280_power
-
 
 button:
   - platform: restart
