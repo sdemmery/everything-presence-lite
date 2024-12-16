@@ -1,20 +1,19 @@
-esphome:
-  name: cave-sensors
-  comment: Everything Presence Lite
-  friendly_name: cave-sensors
-  name_add_mac_suffix: False
-  project:
-    name: EverythingSmartTechnology.Everything Presence Lite
-    version: "1.2.3"
-  on_boot:
-    priority: -100
-    then:
-      - switch.turn_on: 
-          id: bme280_power
-      - delay: 5s
-      - delay: 30s
-      - switch.turn_off: 
-          id: bme280_power
+name: cave-sensors
+comment: Everything Presence Lite
+friendly_name: cave-sensors
+name_add_mac_suffix: False
+project:
+  name: EverythingSmartTechnology.Everything Presence Lite
+  version: "1.2.3"
+on_boot:
+  priority: -100
+  then:
+    - switch.turn_on: 
+        id: bme280_power
+    - delay: 5s
+    - delay: 30s
+    - switch.turn_off: 
+        id: bme280_power
 
 esp32:
   board: esp32dev
@@ -83,4 +82,10 @@ interval:
   - interval: 1min
     then:
       - switch.turn_on: 
-          id: bme280_power   
+          id: bme280_power
+      - delay: 10s
+      - sensor.read: temperature_sensor
+      - sensor.read: pressure
+      - sensor.read: humidity
+      - switch.turn_off: 
+          id: bme280_power
