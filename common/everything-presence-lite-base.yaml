@@ -5,7 +5,7 @@ esphome:
   name_add_mac_suffix: False
   project:
     name: EverythingSmartTechnology.Everything Presence Lite
-    version: "1.2.4"
+    version: "1.2.3"
   on_boot:
     priority: -100
     then:
@@ -16,7 +16,6 @@ esphome:
       - switch.turn_off: 
           id: bme280_power
 
-
 esp32:
   board: esp32dev
   framework:
@@ -24,7 +23,16 @@ esp32:
 
 # OTA configuration for over-the-air updates
 ota:
-  password: !secret ota_password  # Replace with a secure password for OTA updates
+  - platform: esphome
+    id: ota_esphome
+  - platform: http_request
+    id: ota_http_request
+
+# Define the http_request component
+http_request:
+  useragent: esphome/1.1
+  timeout: 10s
+  verify_ssl: false
 
 # I2C bus configuration
 i2c:
