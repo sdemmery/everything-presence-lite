@@ -52,14 +52,6 @@ switch:
       inverted: false
     restore_mode: ALWAYS_OFF
 
-# Light configuration (status LED)
-light:
-  - platform: status_led
-    name: ESP32 LED
-    pin: GPIO14
-    internal: False
-    restore_mode: ALWAYS_OFF
-
 # Number for illuminance offset
 number:
   - platform: template
@@ -130,18 +122,17 @@ binary_sensor:
     on_press:
       - logger.log: "Sensor is powered on, flashing LED"
       - delay: 0.5s
-      - light.turn_on: power_led
+      - output.turn_on: power_led
       - delay: 0.1s
-      - light.turn_off: power_led
+      - output.turn_off: power_led
     on_release:
       - logger.log: "Sensor is powered off, turning off LED"
-      - light.turn_off: power_led
+      - output.turn_off: power_led
 
 # Light for flashing LED when sensor power is on
-light:
+output:
   - platform: gpio
     pin: GPIO2
     id: power_led
-    name: "Power LED"
-    restore_mode: ALWAYS_OFF
     inverted: false
+    restore_mode: ALWAYS_OFF
