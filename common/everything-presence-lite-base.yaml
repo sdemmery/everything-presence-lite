@@ -9,7 +9,7 @@ esphome:
 
   # On boot actions to handle power cycling of the BME280 sensor
   on_boot:
-    priority: 800
+    priority: 700
     then:
       - switch.turn_on: bme280_power
       - logger.log: "Im in the on boot section!!!!!!!!"
@@ -122,24 +122,3 @@ button:
     icon: mdi:power-cycle
     name: "ESP Reboot"
 
-# Flash the onboard red LED when sensor power is ON, move binary sensor to GPIO4
-binary_sensor:
-  - platform: gpio
-    pin: GPIO4  # Changed from GPIO23 to GPIO4 for binary sensor
-    name: "Sensor Power Control"
-    on_press:
-      - logger.log: "Sensor is powered on, flashing LED"
-      - delay: 0.5s
-      - output.turn_on: onboard_led
-      - delay: 0.1s
-      - output.turn_off: onboard_led
-    on_release:
-      - logger.log: "Sensor is powered off, turning off LED"
-      - output.turn_off: onboard_led
-
-# Flash the onboard red LED connected to GPIO2
-output:
-  - platform: gpio
-    pin: GPIO2  # Onboard red LED for most ESP32 boards
-    id: onboard_led
-    inverted: false
