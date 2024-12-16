@@ -12,66 +12,24 @@ esp32:
   framework:
     type: esp-idf
 
-# Enable logging
-logger:
-  level: ${log_level}
-
-# Enable Home Assistant API
-api:
-
-ota:
-  - platform: esphome
-    id: ota_esphome
-  - platform: http_request
-    id: ota_http_request
-
-http_request:
-
-wifi:
-
-improv_serial:
-
+# I2C bus configuration
 i2c:
   - id: bus_a
     sda: 21
     scl: 22
-    scan: true
-
-light:
-  - platform: status_led
-    name: ESP32 LED
-    pin: GPIO14
-    internal: False
-    restore_mode: ALWAYS_OFF
-
-number:
-  - platform: template
-    name: "Illuminance Offset"
-    id: illuminance_offset_ui
-    unit_of_measurement: "lx"
-    min_value: -100
-    max_value: 100
-    step: 5
-    mode: slider
-    update_interval: never
-    optimistic: true
-    restore_value: true
-    initial_value: 0
-    icon: "mdi:brightness-5"
-    entity_category: config
-    on_value:
-      - lambda: 'id(illuminance_sensor).update();'
+    scan: true  # This will automatically scan the I2C bus on boot
 
 # Switch to control BME280 power
 switch:
   - platform: gpio
     id: bme280_power
     pin:
-      number: GPIO23  # Use a non-strapping pin
+      number: GPIO23
       mode: OUTPUT
       inverted: false
     restore_mode: ALWAYS_OFF
 
+# Define your sensors here
 sensor:
   - platform: bh1750
     name: Illuminance
@@ -98,19 +56,24 @@ sensor:
     address: 0x76
     update_interval: 5s  # Disable periodic updates since we control it manually
 
+# Use boot to power on the sensor, scan, and then power off
+on_boot:
+  priority: 600
+  then:
+    - switch.turn_on: 
+        id: bme280_power  # Power on the sensor at boot
+    - delay: 2s  # Give the sensor time to power on
+    - i2c.scan:  # Scan the I2C bus after powering the sensor
+    - delay: 30s  # Wait to allow sensor to stabilize
+    - switch.turn_off: 
+        id: bme280_power  # Turn off the sensor power after the scan
+
+# Interval for periodic tasks
 interval:
   - interval: 1min
     then:
       - switch.turn_on: 
-          id: bme280_power  # Power on the sensor first
-      - delay: 1s  # A small delay to ensure power is supplied
-      - i2c.scan:  # Scan the I2C bus
-      - delay: 30s  # Give the sensor time to stabilize
+          id: bme280_power  # Power on the sensor
+      - delay: 20s  # Ensure sensor has stabilized
       - switch.turn_off: 
-          id: bme280_power  # Power off after reading
-
-
-button:
-  - platform: restart
-    icon: mdi:power-cycle
-    name: "ESP Reboot"
+          id: bme280_power  # Turn off the sensor
