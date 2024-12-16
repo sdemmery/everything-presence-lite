@@ -60,6 +60,15 @@ light:
     internal: False
     restore_mode: ALWAYS_OFF
 
+# Light for blinking (when sensor is powered on)
+light:
+  - platform: gpio
+    pin: GPIO2
+    id: power_led
+    name: "Power LED"
+    restore_mode: ALWAYS_OFF
+    inverted: false
+
 # Number for illuminance offset
 number:
   - platform: template
@@ -121,3 +130,18 @@ button:
   - platform: restart
     icon: mdi:power-cycle
     name: "ESP Reboot"
+
+# Flash the LED when GPIO23 (sensor power) is ON
+binary_sensor:
+  - platform: gpio
+    pin: GPIO23
+    name: "Sensor Power Control"
+    on_press:
+      - logger.log: "Sensor is powered on, flashing LED"
+      - delay: 0.5s
+      - light.turn_on: power_led
+      - delay: 0.1s
+      - light.turn_off: power_led
+    on_release:
+      - logger.log: "Sensor is powered off, turning off LED"
+      - light.turn_off: power_led
