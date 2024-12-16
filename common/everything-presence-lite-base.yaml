@@ -5,7 +5,7 @@ esphome:
   name_add_mac_suffix: True
   project: 
     name: EverythingSmartTechnology.Everything Presence Lite
-    version: "1.2.2"
+    version: "1.2.3"
 
 esp32:
   board: esp32dev
@@ -102,10 +102,13 @@ interval:
   - interval: 1min
     then:
       - switch.turn_on: 
-          id: bme280_power
-      - delay: 20s  # Increased delay to ensure sensor stabilizes
+          id: bme280_power  # Power on the sensor first
+      - delay: 1s  # A small delay to ensure power is supplied
+      - i2c.scan:  # Scan the I2C bus
+      - delay: 30s  # Give the sensor time to stabilize
       - switch.turn_off: 
-          id: bme280_power
+          id: bme280_power  # Power off after reading
+
 
 button:
   - platform: restart
