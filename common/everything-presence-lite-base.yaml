@@ -5,7 +5,7 @@ esphome:
   name_add_mac_suffix: True
   project: 
     name: EverythingSmartTechnology.Everything Presence Lite
-    version: "1.2.1"
+    version: "1.2.2"
 
 esp32:
   board: esp32dev
@@ -67,7 +67,7 @@ switch:
   - platform: gpio
     id: bme280_power
     pin:
-      number: GPIO05  # GPIO pin controlling the power to BME280
+      number: GPIO23  # GPIO pin controlling the power to BME280
       mode: OUTPUT
       inverted: false
     restore_mode: ALWAYS_OFF  # Ensure the GPIO is LOW at startup
@@ -101,12 +101,13 @@ sensor:
 interval:
   - interval: 1min
     then:
-      - switch.turn_on: bme280_power  # Turn on the sensor power
-      - delay: 10s                  # Wait for the sensor to stabilize
-      - sensor.read: temperature_sensor  # Trigger manual sensor readings
-      - sensor.read: pressure
-      - sensor.read: humidity
-      - switch.turn_off: bme280_power  # Turn off the sensor power
+      - switch.turn_on: bme280_power
+      - delay: 10s
+      - component.update: temperature_sensor  # Triggers an update for the temperature sensor
+      - component.update: pressure  # Triggers an update for the pressure sensor
+      - component.update: humidity  # Triggers an update for the humidity sensor
+      - switch.turn_off: bme280_power
+
 
 button:
   - platform: restart
