@@ -67,10 +67,10 @@ switch:
   - platform: gpio
     id: bme280_power
     pin:
-      number: GPIO23  # GPIO pin controlling the power to BME280
+      number: GPIO23  # Use a non-strapping pin
       mode: OUTPUT
       inverted: false
-    restore_mode: ALWAYS_OFF  # Ensure the GPIO is LOW at startup
+    restore_mode: ALWAYS_OFF
 
 sensor:
   - platform: bh1750
@@ -84,6 +84,7 @@ sensor:
       - clamp:
           min_value: 0
 
+sensor:
   - platform: bme280_i2c
     i2c_id: bus_a
     temperature:
@@ -96,17 +97,17 @@ sensor:
       name: "Humidity"
       id: humidity
     address: 0x76
-    update_interval: never  # Disabled periodic updates to control manually
+    update_interval: never  # Disable periodic updates since we control it manually
+
 
 interval:
   - interval: 1min
     then:
-      - switch.turn_on: bme280_power
-      - delay: 10s
-      - component.update: temperature_sensor  # Triggers an update for the temperature sensor
-      - component.update: pressure  # Triggers an update for the pressure sensor
-      - component.update: humidity  # Triggers an update for the humidity sensor
-      - switch.turn_off: bme280_power
+      - switch.turn_on: 
+          id: bme280_power
+      - delay: 10s  # Stabilize the sensor
+      - switch.turn_off: 
+          id: bme280_power
 
 
 button:
