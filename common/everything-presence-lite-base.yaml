@@ -11,15 +11,15 @@ esphome:
   on_boot:
     priority: 1000
     then:
-     - lambda: |-
-         pinMode(23, OUTPUT);
-         digitalWrite(23, HIGH);
+      - lambda: |-
+          pinMode(23, OUTPUT);
+          digitalWrite(23, HIGH);
 
-    - delay: 5s  # Wait for sensor to power up
+      - delay: 5s  # Wait for sensor to power up
 
-    - lambda: |-
-        pinMode(23, OUTPUT);
-        digitalWrite(23, LOW);
+      - lambda: |-
+          pinMode(23, OUTPUT);
+          digitalWrite(23, LOW);
 
 
 esp32:
