@@ -67,8 +67,5 @@ interval:
       - switch.turn_on: 
           id: bme280_power
       - delay: 10s
-      - sensor.read: temperature_sensor
-      - sensor.read: pressure
-      - sensor.read: humidity
       - switch.turn_off: 
           id: bme280_power
