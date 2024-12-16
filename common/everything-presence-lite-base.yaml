@@ -47,6 +47,7 @@ wifi:
 
 # I2C bus configuration
 i2c:
+  - delay: 5s  # Wait for sensor to power up
   - id: bus_a
     sda: 21
     scl: 22
