@@ -9,13 +9,17 @@ esphome:
 
   # On boot actions to handle power cycling of the BME280 sensor
   on_boot:
-    priority: 600
+    priority: 1000
     then:
-      - switch.turn_on: bme280_power
-      - logger.log: "Im in the on boot section!!!!!!!!"
+     - lambda: |-
+         pinMode(23, OUTPUT);
+         digitalWrite(23, HIGH);
+         delay(100);
       - delay: 5s  # Wait for sensor to power up
-      - switch.turn_off: bme280_power  # Turn off sensor after initial read
-      - logger.log: "Im LEAVING the on boot section!!!!!!!!"
+     - lambda: |-
+         pinMode(23, OUTPUT);
+         digitalWrite(23, LOW);
+         delay(100);
 
 esp32:
   board: esp32dev
