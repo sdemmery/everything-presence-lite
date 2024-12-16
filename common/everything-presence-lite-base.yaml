@@ -12,8 +12,10 @@ esphome:
     priority: 600
     then:
       - switch.turn_on: bme280_power
+      - logger.log: "Im in the on boot section!!!!!!!!"
       - delay: 5s  # Wait for sensor to power up
       - switch.turn_off: bme280_power  # Turn off sensor after initial read
+      - logger.log: "Im LEAVING the on boot section!!!!!!!!"
 
 esp32:
   board: esp32dev
