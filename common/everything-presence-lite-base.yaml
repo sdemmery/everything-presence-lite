@@ -83,7 +83,7 @@ sensor:
       - lambda: "return x + id(illuminance_offset_ui).state;"
       - clamp:
           min_value: 0
-          
+
   - platform: bme280_i2c
     i2c_id: bus_a
     temperature:
@@ -97,16 +97,26 @@ sensor:
       id: humidity
     address: 0x76
     update_interval: 5s
+    on_value:
+      then:
+        - switch.turn_off: bme280_power  # Turn off sensor after first read
 
 # Interval for periodic tasks (BME280 power cycling)
 interval:
   - interval: 1min
     then:
-      - switch.turn_on: 
-          id: bme280_power
+      - switch.turn_on: bme280_power
       - delay: 10s
-      - switch.turn_off: 
-          id: bme280_power
+      - switch.turn_off: bme280_power
+
+# On Boot Actions (Power on sensor, read initial value, then turn off)
+on_boot:
+  priority: 600
+  then:
+    - switch.turn_on: bme280_power
+    - delay: 500ms  # Wait for sensor to power up
+    - sensor.update: bme280  # Trigger initial sensor read
+    - switch.turn_off: bme280_power  # Turn off sensor after initial read
 
 # Button to restart the ESP
 button:
