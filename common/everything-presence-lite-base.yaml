@@ -1,20 +1,3 @@
-esphome:
-  name: cave-sensors
-  friendly_name: cave-sensors
-  name_add_mac_suffix: False
-  project:
-    name: EverythingSmartTechnology.Everything Presence Lite
-    version: "1.2.3"
-  on_boot:
-    priority: -100
-    then:
-      - switch.turn_on: 
-          id: bme280_power
-      - delay: 5s
-      - delay: 30s
-      - switch.turn_off: 
-          id: bme280_power
-
 esp32:
   board: esp32dev
   framework:
@@ -49,11 +32,47 @@ switch:
       mode: OUTPUT
       inverted: false
     restore_mode: ALWAYS_OFF
-    friendly_name: "BME280 Power"
 
 # Define your sensors here
 sensor:
   - platform: bh1750
-    name: "Illuminance"
+    name: "Illuminance Sensor"
     id: illuminance_sensor
-    i2c_id: bu
+    i2c_id: bus_a
+    address: 0x23
+    update_interval: ${illuminance_update_interval}
+    filters:
+      - lambda: "return x + id(illuminance_offset_ui).state;"
+      - clamp:
+          min_value: 0
+    friendly_name: "Illuminance"
+          
+  - platform: bme280_i2c
+    i2c_id: bus_a
+    temperature:
+      name: "Temperature"
+      id: temperature_sensor
+      friendly_name: "Temperature"
+    pressure:
+      name: "Pressure"
+      id: pressure
+      friendly_name: "Pressure"
+    humidity:
+      name: "Humidity"
+      id: humidity
+      friendly_name: "Humidity"
+    address: 0x76
+    update_interval: 5s
+
+# Interval for periodic tasks
+interval:
+  - interval: 1min
+    then:
+      - switch.turn_on: 
+          id: bme280_power
+      - delay: 10s
+      - sensor.read: temperature_sensor
+      - sensor.read: pressure
+      - sensor.read: humidity
+      - switch.turn_off: 
+          id: bme280_power
