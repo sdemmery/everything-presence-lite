@@ -23,7 +23,10 @@ esp32:
 
 # OTA configuration for over-the-air updates
 ota:
-  password: !secret ota_password  # Replace with a secure password for OTA updates
+  - platform: esphome
+    id: ota_esphome
+  - platform: http_request
+    id: ota_http_request
 
 # I2C bus configuration
 i2c:
