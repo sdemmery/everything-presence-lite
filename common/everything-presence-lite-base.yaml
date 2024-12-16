@@ -12,7 +12,8 @@ esphome:
     priority: 600
     then:
       - switch.turn_on: bme280_power
-      - delay: 2s  # Wait for sensor to power up
+      - delay: 500ms  # Wait for sensor to power up
+      - sensor.update: bme280  # Trigger initial sensor read
       - switch.turn_off: bme280_power  # Turn off sensor after initial read
 
 esp32:
@@ -105,9 +106,6 @@ sensor:
       id: humidity
     address: 0x76
     update_interval: 5s
-    on_value:
-      then:
-        - switch.turn_off: bme280_power  # Turn off sensor after first read
 
 # Interval for periodic tasks (BME280 power cycling)
 interval:
