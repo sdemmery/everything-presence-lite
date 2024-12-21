@@ -5,7 +5,7 @@ esphome:
   name_add_mac_suffix: True
   project:
     name: EverythingSmartTechnology.Everything Presence Lite
-    version: "1.2.8"  # Updated to the latest version
+    version: "1.2.9"  # Updated to the latest version
 
 esp32:
   board: esp32dev
