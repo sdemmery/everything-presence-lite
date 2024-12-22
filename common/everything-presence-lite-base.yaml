@@ -5,7 +5,7 @@ esphome:
   name_add_mac_suffix: True
   project:
     name: EverythingSmartTechnology.Everything Presence Lite
-    version: "1.2.9"  # Updated to the latest version
+    version: "1.3.0"  # Updated to the latest version
 
 esp32:
   board: esp32dev
@@ -38,7 +38,7 @@ wifi:
   password: !secret wifi_password
   fast_connect: on
   manual_ip:
-    static_ip: 10.0.0.137
+    static_ip: 10.0.0.138
     gateway: 10.0.0.2
     subnet: 255.255.255.0
 
