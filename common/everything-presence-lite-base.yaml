@@ -37,7 +37,6 @@ wifi:
   ssid: !secret wifi_ssid
   password: !secret wifi_password
   fast_connect: on
-  power_save_mode: none
   manual_ip:
     static_ip: 10.0.0.137
     gateway: 10.0.0.2
