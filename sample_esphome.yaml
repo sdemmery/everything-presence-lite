@@ -1,0 +1,24 @@
+substitutions:
+  name: cave-sensors
+  friendly_name: cave-sensors
+  ota_password: !secret ota_password
+  
+packages:
+  EverythingSmartTechnology.everything_Presence_Lite: github://sdemmery/everything-presence-lite/everything-presence-lite-ha.yaml@main
+
+esphome:
+  name: ${name}
+  name_add_mac_suffix: false
+  friendly_name: ${friendly_name}
+api:
+  encryption:
+    key: ?????
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+  fast_connect: on
+  manual_ip:
+    static_ip: 10.0.0.?
+    gateway: 10.0.0.2
+    subnet: 255.255.255.0
